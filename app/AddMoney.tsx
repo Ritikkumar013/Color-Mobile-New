@@ -359,6 +359,7 @@
 // };
 
 // export default AddMoney;
+
 import {
   View,
   Text,
@@ -415,77 +416,77 @@ const AddMoney = () => {
     }
   };
 
+const handleDeposit = async () => {
+  if (!amount || parseFloat(amount) <= 0) {
+    Alert.alert("Invalid Amount", "Please enter a valid deposit amount.");
+    return;
+  }
 
-  const handleDeposit = async () => {
-    if (!amount || parseFloat(amount) <= 0) {
-      Alert.alert("Invalid Amount", "Please enter a valid deposit amount.");
+  setLoading(true);
+  try {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) throw new Error("User not authenticated. Please log in again.");
+
+    const response = await fetch(`${API_BASE_URL}/api/wallet/deposit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ amount: parseFloat(amount) }),
+    });
+
+    const rawText = await response.text();
+    console.log("Raw API Response:", rawText);
+
+    let data: any = null;
+    let isJson = false;
+
+    try {
+      data = JSON.parse(rawText);
+      isJson = true;
+    } catch {
+      isJson = false;
+    }
+
+    // ✅ Fix: Smart detection for success text
+    const messageText =
+      (isJson ? data?.message : rawText)?.toLowerCase?.() || "";
+
+    const looksSuccessful =
+      (isJson && data?.success) ||
+      messageText.includes("deposit successful") ||
+      messageText.includes("success");
+
+    if (looksSuccessful && response.ok) {
+      Alert.alert("Deposit Successful", "Your deposit has been processed successfully.");
+      setAmount("");
+      await refreshBalance();
       return;
     }
 
-    setLoading(true);
-    try {
-      const token = await AsyncStorage.getItem("token");
-      if (!token) {
-        throw new Error("User not authenticated. Please log in again.");
-      }
-
-      const response = await fetch(
-        `${API_BASE_URL}/api/wallet/deposit`, // Use the constant
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            amount: parseFloat(amount),
-          }),
-        }
-      );
-
-      const text = await response.text();
-      console.log("Raw API Response:", text);
-
-      let data: any;
-      try {
-        data = JSON.parse(text);
-      } catch (error) {
-        // If the server returns a non-JSON success page (common in payment gateways)
-        if (response.ok) {
-           // We assume successful redirect/payment initiation
-           Alert.alert("Deposit Initiated", "You will now be redirected to the payment gateway. Please complete the payment.");
-           setAmount(""); 
-           // Request a balance update immediately after initiating payment
-           refreshBalance(); 
-           return;
-        }
-        throw new Error("Invalid JSON response from server or unexpected error.");
-      }
-
-      console.log("Parsed API Response:", data);
-
-      if (response.ok && data?.success) {
-        Alert.alert("Deposit Successful", "Your deposit has been processed.");
-        setAmount(""); // Reset input after success
-        // Request a balance update immediately after deposit success
-        refreshBalance(); 
-
-      } else {
-        Alert.alert("Deposit Failed", data?.message || "Something went wrong during deposit.");
-      }
-    } catch (error: unknown) {
-      console.error("Deposit Error:", error);
-
-      let errorMessage = "Unable to process deposit. Please try again later.";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      Alert.alert("Error", errorMessage);
-    } finally {
-      setLoading(false);
+    if (!isJson && response.ok) {
+      Alert.alert("Deposit Initiated", "Redirecting to payment gateway...");
+      setAmount("");
+      await refreshBalance();
+      return;
     }
-  };
+
+    Alert.alert("Deposit Failed", data?.message || "Something went wrong during deposit.");
+    return;
+
+  } catch (error: unknown) {
+    console.error("Deposit Error:", error);
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Unable to process deposit. Please try again later.";
+    Alert.alert("Error", message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <GestureHandlerRootView>
