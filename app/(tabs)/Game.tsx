@@ -38,7 +38,7 @@
 //       }
 
 //       const response = await fetch(
-//         "http://192.154.230.43:3000/api/wallet/balance",
+//         "https://ctbackend.crobstacle.com/api/wallet/balance",
 //         {
 //           method: "GET",
 //           headers: {
@@ -154,154 +154,135 @@
 // };
 
 // export default Game;
-import {
-    View,
-    Text,
-    Image,
-    ActivityIndicator,
-    Alert, 
-} from "react-native";
-import React, { useRef, useEffect, useState, useCallback } from "react";
-import TabsMin from "../../Components/TabsMin";
-import { FontAwesome5 } from "@expo/vector-icons";
-import {
-    GestureHandlerRootView,
-    ScrollView,
-} from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
-import { Link } from "expo-router";
-import { StatusBar as RNStatusBar } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TouchableOpacity } from "react-native";
-import Animation from "@/Components/Animation";
-// Importing the useSocket hook to access the global socket instance
-import { useSocket } from "@/app/context/SocketContext";
+// app/(tabs)/game.tsx
 
-// Removed API_BASE_URL as it's no longer needed for direct balance fetching here
+    import {
+        View,
+        Text,
+        Image,
+        ActivityIndicator,
+        Alert, 
+    } from "react-native";
+    import React, { useState } from "react";
+    // 👈 Import useLocalSearchParams
+    import { useLocalSearchParams } from "expo-router"; 
+    import TabsMin from "../../Components/TabsMin";
+    import { FontAwesome5 } from "@expo/vector-icons";
+    import {
+        GestureHandlerRootView,
+        ScrollView,
+    } from "react-native-gesture-handler";
+    import { Ionicons } from "@expo/vector-icons";
+    import { Link } from "expo-router";
+    import { StatusBar as RNStatusBar } from "react-native";
+    import { StatusBar } from "expo-status-bar";
+    import { SafeAreaView } from "react-native-safe-area-context";
+    import { TouchableOpacity } from "react-native";
+    import Animation from "@/Components/Animation";
+    import { useSocket } from "@/Components/context/SocketContext";
 
-const Game = () => {
-    // Access the global socket instance, connection status, balance, and refresh function
-    const { socket, isConnected, balance, refreshBalance } = useSocket(); 
+    const Game = () => {
+        // 👈 1. Get the initialGameId parameter
+        const params = useLocalSearchParams();
+        // Ensure the parameter is a string, defaulting to "1" if not provided
+        const initialGameId = Array.isArray(params.initialGameId)
+            ? params.initialGameId[0]
+            : params.initialGameId || "1"; 
 
-    // Keep loading state for the *manual refresh* indicator only
-    const [loading, setLoading] = useState(false);
-    
-    // The previous API-based balance logic is now obsolete, 
-    // as balance is provided by the SocketContext.
 
-    // Helper for manual refresh press
-    const handleManualRefresh = async () => {
-        if (loading) return; // Prevent multiple clicks
+        const { socket, isConnected, balance, refreshBalance } = useSocket(); 
+        const [loading, setLoading] = useState(false);
+        
+        const handleManualRefresh = async () => {
+            if (loading) return;
 
-        setLoading(true);
-        try {
-            // Call the unified refresh function from the context
-            await refreshBalance(); 
-            // In a real scenario, you might want to wait for the socket/API 
-            // to update the context state, but for this component, we'll
-            // immediately display a success message after the call starts.
-            // Note: The context's fetchBalanceViaApi already handles the API call 
-            // if the socket is down, and the socket itself will push the update.
-            Alert.alert("Request Sent", "Balance refresh initiated.");
-        } catch (error) {
-            console.error("Error initiating refresh:", error);
-            Alert.alert("Error", "Could not initiate balance refresh.");
-        } finally {
-            // Since the context manages the balance state update, we just stop 
-            // the local loading indicator after a short delay for UX.
-            // A more robust solution might listen to a temporary context state 
-            // like 'isBalanceRefreshing' if you want a perfect link between 
-            // the UI indicator and the network response.
-            setTimeout(() => setLoading(false), 500); 
-        }
+            setLoading(true);
+            try {
+                await refreshBalance(); 
+                Alert.alert("Request Sent", "Balance refresh initiated.");
+            } catch (error) {
+                console.error("Error initiating refresh:", error);
+                Alert.alert("Error", "Could not initiate balance refresh.");
+            } finally {
+                setTimeout(() => setLoading(false), 500); 
+            }
+        };
+
+        return (
+            <GestureHandlerRootView>
+                <StatusBar style="auto" backgroundColor="#22c55e" />
+
+                {/* Custom Status Bar Background */}
+                <View
+                    className="bg-green-500"
+                    style={{
+                        height: RNStatusBar.currentHeight,
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        zIndex: 1,
+                    }}
+                />
+
+                <ScrollView>
+                    <SafeAreaView className="bg-green-500 min-h-[35vh] rounded-b-[40px] p-4">
+                        <View className="bg-white w-full items-center rounded-3xl my-4">
+                            
+                            <TouchableOpacity
+                                className="flex flex-row items-center mt-2 mb-2"
+                                onPress={handleManualRefresh}
+                                disabled={loading} 
+                            >
+                                {loading ? (
+                                    <ActivityIndicator size="small" color="#16a34a" />
+                                ) : (
+                                    <>
+                                        <Text className="text-green-600 font-bold text-3xl">
+                                            {balance !== null ? `₹${balance.toFixed(2)}` : "₹--"}
+                                        </Text>
+                                        <FontAwesome5
+                                            name="sync-alt"
+                                            size={16}
+                                            color="#ccc"
+                                            style={{ marginLeft: 8 }}
+                                        />
+                                    </>
+                                )}
+                            </TouchableOpacity>
+
+                            <View className="flex-row items-center gap-2 mb-4">
+                                <Ionicons name="wallet" size={30} color="green" />
+                                <Text className="text-xl font-bold">Wallet Balance</Text>
+                            </View>
+
+                            <View className="flex-row justify-between gap-3 mt-4 my-4">
+                                <Link href="/AddMoney">
+                                    <View className="bg-green-600 p-2 px-10 rounded-full">
+                                        <Text className="text-white text-lg text-center">
+                                            Deposit
+                                        </Text>
+                                    </View>
+                                </Link>
+
+                                <Link href="/WithdrawMoney">
+                                    <View className="bg-green-600 p-2 rounded-full px-10">
+                                        <Text className="text-white text-lg text-center">
+                                            Withdraw
+                                        </Text>
+                                    </View>
+                                </Link>
+                            </View>
+                        </View>
+
+                        <Animation />
+                        
+                    </SafeAreaView>
+                    {/* 👈 2. Pass the retrieved parameter as the initialTab prop */}
+                    <TabsMin initialTab={initialGameId} /> 
+                </ScrollView>
+            </GestureHandlerRootView>
+        );
     };
 
-    // The socket listeners and initial fetch logic are now handled entirely in the SocketProvider.
-    // The balance state is automatically updated here when the context updates.
-
-
-    return (
-        <GestureHandlerRootView>
-            <StatusBar style="auto" backgroundColor="#22c55e" />
-
-            {/* Custom Status Bar Background */}
-            <View
-                className="bg-green-500"
-                style={{
-                    height: RNStatusBar.currentHeight,
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    zIndex: 1,
-                }}
-            />
-
-            <ScrollView>
-                <SafeAreaView className="bg-green-500 min-h-[35vh] rounded-b-[40px] p-4">
-                    <View className="bg-white w-full items-center rounded-3xl my-4">
-                        
-                        {/* Connection Status is leveraged from context */}
-                        {/* <Text className={`text-sm font-light mt-3 ${isConnected ? "text-green-500" : "text-red-500"}`}>
-                             {isConnected ? "Connection: Live" : "Connection: Reconnecting..."}
-                        </Text> */}
-                        
-                        <TouchableOpacity
-                            className="flex flex-row items-center mt-2 mb-2"
-                            onPress={handleManualRefresh}
-                            disabled={loading} 
-                        >
-                            {loading ? (
-                                <ActivityIndicator size="small" color="#16a34a" />
-                            ) : (
-                                <>
-                                    {/* Balance is read directly from the context state */}
-                                    <Text className="text-green-600 font-bold text-3xl">
-                                         {balance !== null ? `₹${balance.toFixed(2)}` : "₹--"}
-                                    </Text>
-                                    <FontAwesome5
-                                        name="sync-alt"
-                                        size={16}
-                                        color="#ccc"
-                                        style={{ marginLeft: 8 }}
-                                    />
-                                </>
-                            )}
-                        </TouchableOpacity>
-
-                        <View className="flex-row items-center gap-2 mb-4">
-                            <Ionicons name="wallet" size={30} color="green" />
-                            <Text className="text-xl font-bold">Wallet Balance</Text>
-                        </View>
-
-                        <View className="flex-row justify-between gap-3 mt-4 my-4">
-                            <Link href="/AddMoney">
-                                <View className="bg-green-600 p-2 px-10 rounded-full">
-                                    <Text className="text-white text-lg text-center">
-                                        Deposit
-                                    </Text>
-                                </View>
-                            </Link>
-
-                            <Link href="/WithdrawMoney">
-                                <View className="bg-green-600 p-2 rounded-full px-10">
-                                    <Text className="text-white text-lg text-center">
-                                        Withdraw
-                                    </Text>
-                                </View>
-                            </Link>
-                        </View>
-                    </View>
-
-                    <Animation />
-                    
-                </SafeAreaView>
-                <TabsMin />
-            </ScrollView>
-        </GestureHandlerRootView>
-    );
-};
-
-export default Game;
+    export default Game;

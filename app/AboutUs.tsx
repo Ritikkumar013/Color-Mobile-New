@@ -3,7 +3,7 @@ import React from "react";
 import { Link } from "expo-router";
 import StstusBar  from "@/Components/StstusBar";
 
-const AboutUs = () => {
+export default function AboutUs() {
   return (
     <View>
       <StstusBar />
@@ -64,4 +64,4 @@ const AboutUs = () => {
   );
 };
 
-export default AboutUs;
+

@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useLocalSearchParams } from "expo-router";
 import { useRouter } from "expo-router";
 
-const UpdatePasswordScreen = () => {
+export default function UpdatePasswordScreen() {
   const params = useLocalSearchParams(); // Get the passed parameters
   const [number, setNumber] = useState(
     Array.isArray(params.phoneNumber) ? params.phoneNumber[0] : params.phoneNumber ?? ""
@@ -25,7 +25,7 @@ const router=useRouter();
     setLoading(true); // Start loading
 
     try {
-      const response = await fetch("http://192.154.230.43:3000/api/auth/update-password", {
+      const response = await fetch("https://ctbackend.crobstacle.com/api/auth/update-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -41,7 +41,7 @@ const router=useRouter();
       setLoading(false); // Stop loading
 
       if (response.ok) {
-        // Alert.alert("Success", "Password updated successfully!");
+        Alert.alert("Success", "Password updated successfully!");
         router.push("/Login");
       } else {
         Alert.alert("Error", data.message || "Failed to update password");
@@ -137,4 +137,3 @@ const router=useRouter();
   );
 };
 
-export default UpdatePasswordScreen;

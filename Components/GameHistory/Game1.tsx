@@ -55,7 +55,7 @@
 //       }
 
 //       const response = await fetch(
-//         "http://192.154.230.43:3000/api/game/history",
+//         "https://ctbackend.crobstacle.com/api/game/history",
 //         {
 //           headers: {
 //             Authorization: `Bearer ${token}`,
@@ -291,7 +291,7 @@ const HistoryTable: React.FC = () => {
       }
 
       const response = await fetch(
-        "http://192.154.230.43:3000/api/game/history",
+        "https://ctbackend.crobstacle.com/api/game/history",
         {
           headers: {
             Authorization: `Bearer ${token}`,

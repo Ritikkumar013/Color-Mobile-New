@@ -102,7 +102,7 @@ import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StstusBar from "@/Components/StstusBar";
 
-const Support = () => {
+export default function Support() {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [message, setMessage] = useState("");
@@ -141,7 +141,7 @@ const Support = () => {
     }
 
     try {
-      const response = await fetch("http://192.154.230.43:3000/api/queries/submit", {
+      const response = await fetch("https://ctbackend.crobstacle.com/api/queries/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -254,4 +254,4 @@ const pickerSelectStyles = {
   },
 };
 
-export default Support;
+

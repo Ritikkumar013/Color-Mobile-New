@@ -12,7 +12,7 @@
 //   createdAt: string;
 // }
 
-// const API_URL = "http://192.154.230.43:3000/api/wallet/transactions"; // Replace with actual API URL
+// const API_URL = "https://ctbackend.crobstacle.com/api/wallet/transactions"; // Replace with actual API URL
 
 // const TransactionItem = ({ type, amount, date }: { type: string; amount: number; date: string }) => (
 //   <View className="flex-row justify-between items-center mt-4">
@@ -88,7 +88,6 @@
 // };
 
 // export default Transaction;
-
 import {
   View,
   Text,
@@ -126,7 +125,8 @@ interface ApiResponse {
     };
 }
 
-const API_URL = "http://192.154.230.43:3000/api/wallet/transactions";
+const API_URL = "https://ctbackend.crobstacle.com/api/wallet/transactions";
+const ITEMS_PER_PAGE = 10;
 
 // --- 2. Transaction Item Component (NativeWind) ---
 const TransactionItem = ({ item }: { item: TransactionDetail }) => {
@@ -149,7 +149,7 @@ const TransactionItem = ({ item }: { item: TransactionDetail }) => {
       <View className="flex-1 mr-3">
         {/* Main Text: Type of transaction */}
         <Text className="text-sm font-bold text-gray-800">
-          {item.category === 'money' ? (isDebit ? 'Withdrawal' : 'Deposit') : 'Game Bet'}
+          {isDebit ? 'Withdrawal' : 'Deposit'}
         </Text>
         {/* Sub Text: Description */}
         <Text className="text-xs text-gray-500 mt-1">
@@ -170,9 +170,12 @@ const TransactionItem = ({ item }: { item: TransactionDetail }) => {
 };
 
 // --- 3. Main Transaction Screen Component (NativeWind) ---
-const Transaction = () => {
-  const [transactions, setTransactions] = useState<TransactionDetail[]>([]);
+export default function Transaction(){
+  const [allTransactions, setAllTransactions] = useState<TransactionDetail[]>([]);
+  const [displayedTransactions, setDisplayedTransactions] = useState<TransactionDetail[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
@@ -205,9 +208,15 @@ const Transaction = () => {
 
         const data: ApiResponse = await response.json();
         
-        // FIX: Extract the nested data array
+        // Extract the nested data array and filter only money transactions (no game bets)
         if (data.status === "success" && data.data && Array.isArray(data.data.data)) {
-          setTransactions(data.data.data);
+          // Filter only money category transactions (deposits and withdrawals)
+          const moneyTransactions = data.data.data.filter(
+            (transaction) => transaction.category === 'money'
+          );
+          setAllTransactions(moneyTransactions);
+          // Show first 10 items
+          setDisplayedTransactions(moneyTransactions.slice(0, ITEMS_PER_PAGE));
         } else {
             throw new Error("Invalid response format received from server.");
         }
@@ -223,10 +232,28 @@ const Transaction = () => {
     fetchTransactions();
   }, []);
 
+  // Load more transactions
+  const loadMoreTransactions = () => {
+    if (loadingMore) return;
+    
+    setLoadingMore(true);
+    const nextPage = currentPage + 1;
+    const startIndex = 0;
+    const endIndex = nextPage * ITEMS_PER_PAGE;
+    
+    setTimeout(() => {
+      setDisplayedTransactions(allTransactions.slice(startIndex, endIndex));
+      setCurrentPage(nextPage);
+      setLoadingMore(false);
+    }, 300);
+  };
+
+  // Check if there are more items to load
+  const hasMoreItems = displayedTransactions.length < allTransactions.length;
+
   // --- Render Logic ---
   const renderContent = () => {
     if (loading) {
-      // NativeWind supports tintColor for ActivityIndicator
       return <ActivityIndicator size="large" color="#16a34a" className="mt-5" />;
     }
 
@@ -234,17 +261,42 @@ const Transaction = () => {
       return <Text className="text-red-500 text-center py-5">Error: {error}</Text>;
     }
 
-    if (transactions.length === 0) {
+    if (allTransactions.length === 0) {
       return <Text className="text-gray-500 text-center py-5">No transactions found.</Text>;
     }
 
     return (
-      <FlatList
-        data={transactions}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => <TransactionItem item={item} />}
-        contentContainerStyle={{ paddingBottom: 20 }} // Keep this as inline style for consistency with NativeWind's FlatList
-      />
+      <View className="flex-1">
+        <FlatList<TransactionDetail>
+          data={displayedTransactions}
+          keyExtractor={(item: TransactionDetail) => item._id}
+          renderItem={({ item }: { item: TransactionDetail }) => <TransactionItem item={item} />}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+        
+        {/* Load More Button */}
+        {hasMoreItems && (
+          <View className="items-center py-4">
+            <TouchableOpacity
+              onPress={loadMoreTransactions}
+              disabled={loadingMore}
+              className="bg-green-600 px-6 py-3 rounded-lg flex-row items-center"
+            >
+              {loadingMore ? (
+                <ActivityIndicator size="small" color="#ffffff" />
+              ) : (
+                <>
+                  <Text className="text-white font-semibold mr-2">Load More</Text>
+                  <Ionicons name="chevron-down" size={16} color="white" />
+                </>
+              )}
+            </TouchableOpacity>
+            <Text className="text-xs text-gray-500 mt-2">
+              Showing {displayedTransactions.length} of {allTransactions.length} transactions
+            </Text>
+          </View>
+        )}
+      </View>
     );
   };
 
@@ -273,4 +325,3 @@ const Transaction = () => {
   );
 };
 
-export default Transaction;

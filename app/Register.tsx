@@ -151,14 +151,14 @@ import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler
 import { useRouter } from "expo-router";
 import { Link } from "expo-router";
 
-const Register = () => {
+export default function Register() {
   const [name, setName] = useState<string>(""); // New name state
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const API_URL = "http://192.154.230.43:3000/api/auth/register"; // Replace with actual API URL
+  const API_URL = "https://ctbackend.crobstacle.com/api/auth/register"; // Replace with actual API URL
 
   const onRegister = async () => {
     if (!name || !phoneNumber || !password) {
@@ -240,6 +240,7 @@ const Register = () => {
             value={phoneNumber}
             onChangeText={setPhoneNumber}
             placeholder="Enter phone number"
+            maxLength={10}
             keyboardType="phone-pad"
           />
 
@@ -283,4 +284,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+

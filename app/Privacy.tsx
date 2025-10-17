@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, ScrollView } from "react-native";
 import StstusBar from "@/Components/StstusBar";
 
-const PrivacyPolicyScreen = () => {
+export default function PrivacyPolicyScreen() {
   return (
     <View>
       <StstusBar />
@@ -88,4 +88,4 @@ const PrivacyPolicyScreen = () => {
   );
 };
 
-export default PrivacyPolicyScreen;
+// export default PrivacyPolicyScreen;

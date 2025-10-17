@@ -45,7 +45,7 @@
 //     }
 
 //     const response = await fetch(
-//       "http://192.154.230.43:3000/api/wallet/balance",
+//       "https://ctbackend.crobstacle.com/api/wallet/balance",
 //       {
 //         method: "GET",
 //         headers: {
@@ -99,7 +99,7 @@
 //         throw new Error("User not authenticated. Please log in again.");
 //       }
 
-//       const response = await fetch("http://192.154.230.43:3000/api/wallet/withdraw", {
+//       const response = await fetch("https://ctbackend.crobstacle.com/api/wallet/withdraw", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -274,7 +274,6 @@
 // };
 
 // export default WithdrawMoney;
-
 import {
   View,
   Text,
@@ -297,10 +296,10 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import StstusBar from "@/Components/StstusBar"; 
-import { useSocket } from "@/app/context/SocketContext"; 
+import { useSocket } from "@/Components/context/SocketContext"; 
 
 // API URL is needed only for the withdrawal action
-const API_BASE_URL = "http://192.154.230.43:3000";
+const API_BASE_URL = "https://ctbackend.crobstacle.com";
 
 // Define the bankDetailStyle using StyleSheet.create for correct TypeScript type inference
 const styles = StyleSheet.create({
@@ -322,7 +321,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const WithdrawMoney = () => {
+export default function WithdrawMoney() {
   const {
     balance,         
     isConnected,     
@@ -356,117 +355,110 @@ const WithdrawMoney = () => {
   };
 
   const handleWithdraw = async () => {
-  const withdrawalAmount = parseFloat(amount);
-  if (!amount || isNaN(withdrawalAmount) || withdrawalAmount <= 0) {
-    Alert.alert("Invalid Amount", "Please enter a valid withdrawal amount.");
-    return;
-  }
+    const withdrawalAmount = parseFloat(amount);
+    if (!amount || isNaN(withdrawalAmount) || withdrawalAmount <= 0) {
+      Alert.alert("Invalid Amount", "Please enter a valid withdrawal amount.");
+      return;
+    }
 
-  if (!selectBankDetail) {
-    Alert.alert("Invalid Bank", "Please select a bank.");
-    return;
-  }
+    if (!selectBankDetail) {
+      Alert.alert("Invalid Bank", "Please select a bank.");
+      return;
+    }
 
-  // if (!login) {
-  //   Alert.alert("Password Required", "Please enter your login password to confirm.");
-  //   return;
-  // }
+    if (balance !== null && withdrawalAmount > balance) {
+      Alert.alert(
+        "Insufficient Balance",
+        `Your current balance (₹${balance.toFixed(2)}) is less than the withdrawal amount (₹${withdrawalAmount.toFixed(2)}).`
+      );
+      return;
+    }
 
-  if (balance !== null && withdrawalAmount > balance) {
-    Alert.alert(
-      "Insufficient Balance",
-      `Your current balance (₹${balance.toFixed(2)}) is less than the withdrawal amount (₹${withdrawalAmount.toFixed(2)}).`
-    );
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const token = await AsyncStorage.getItem("token");
-    if (!token) throw new Error("User not authenticated. Please log in again.");
-
-    const response = await fetch(`${API_BASE_URL}/api/wallet/withdraw`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        amount: withdrawalAmount,
-        password: login,
-        bank: selectBankDetail,
-      }),
-    });
-
-    const rawText = await response.text();
-    console.log("Raw API Response:", rawText);
-
-    // Try parse JSON, but don't crash on non-JSON
-    let data: any = null;
-    let isJson = false;
+    setLoading(true);
     try {
-      data = JSON.parse(rawText);
-      isJson = true;
-    } catch {
-      isJson = false;
-    }
+      const token = await AsyncStorage.getItem("token");
+      if (!token) throw new Error("User not authenticated. Please log in again.");
 
-    // Normalize message text to inspect for success keywords
-    const messageText = (
-      (isJson ? (data?.message ?? "") : rawText) || ""
-    ).toString().toLowerCase();
+      const response = await fetch(`${API_BASE_URL}/api/wallet/withdraw`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          amount: withdrawalAmount,
+          password: login,
+          bank: selectBankDetail,
+        }),
+      });
 
-    // Decide whether this looks like a success
-    const looksSuccessful =
-      (isJson && !!data?.success) ||
-      messageText.includes("withdrawal successful") ||
-      messageText.includes("withdraw successful") ||
-      messageText.includes("withdrawn") ||
-      messageText.includes("success");
+      const rawText = await response.text();
+      console.log("Raw API Response:", rawText);
 
-    // CASE: explicit success (either JSON success flag or message contains success)
-    if (response.ok && looksSuccessful) {
-      Alert.alert("Withdrawal Successful", (isJson ? data?.message : "Your withdrawal has been processed.") || "Your withdrawal has been processed.");
-      setAmount("");
-      setLogin("");
-      await refreshBalance();
-      return; // important: stop here
-    }
+      // Try parse JSON, but don't crash on non-JSON
+      let data: any = null;
+      let isJson = false;
+      try {
+        data = JSON.parse(rawText);
+        isJson = true;
+      } catch {
+        isJson = false;
+      }
 
-    // CASE: server returned OK but non-JSON (maybe initiated)
-    if (response.ok && !isJson) {
-      Alert.alert("Withdrawal Initiated", "Your withdrawal request has been received. Please wait for processing.");
-      setAmount("");
-      setLogin("");
-      await refreshBalance();
+      // Normalize message text to inspect for success keywords
+      const messageText = (
+        (isJson ? (data?.message ?? "") : rawText) || ""
+      ).toString().toLowerCase();
+
+      // Decide whether this looks like a success
+      const looksSuccessful =
+        (isJson && !!data?.success) ||
+        messageText.includes("withdrawal successful") ||
+        messageText.includes("withdraw successful") ||
+        messageText.includes("withdrawn") ||
+        messageText.includes("success");
+
+      // CASE: explicit success (either JSON success flag or message contains success)
+      if (response.ok && looksSuccessful) {
+        Alert.alert("Withdrawal Successful", (isJson ? data?.message : "Your withdrawal has been processed.") || "Your withdrawal has been processed.");
+        setAmount("");
+        setLogin("");
+        await refreshBalance();
+        return;
+      }
+
+      // CASE: server returned OK but non-JSON (maybe initiated)
+      if (response.ok && !isJson) {
+        Alert.alert("Withdrawal Initiated", "Your withdrawal request has been received. Please wait for processing.");
+        setAmount("");
+        setLogin("");
+        await refreshBalance();
+        return;
+      }
+
+      // CASE: JSON response but success flag false (or no success keywords)
+      if (isJson) {
+        Alert.alert("Withdrawal Failed", data?.message || `Something went wrong. Server status: ${response.status}`);
+        return;
+      }
+
+      // CASE: fallback unexpected response
+      Alert.alert("Withdrawal Failed", `Unexpected server response. Status: ${response.status}`);
       return;
-    }
-
-    // CASE: JSON response but success flag false (or no success keywords)
-    if (isJson) {
-      Alert.alert("Withdrawal Failed", data?.message || `Something went wrong. Server status: ${response.status}`);
+    } catch (error: unknown) {
+      console.error("Withdrawal Error:", error);
+      const message = error instanceof Error ? error.message : "Unable to process withdrawal. Please try again later.";
+      Alert.alert("Error", message);
       return;
+    } finally {
+      setLoading(false);
     }
-
-    // CASE: fallback unexpected response
-    Alert.alert("Withdrawal Failed", `Unexpected server response. Status: ${response.status}`);
-    return;
-  } catch (error: unknown) {
-    console.error("Withdrawal Error:", error);
-    const message = error instanceof Error ? error.message : "Unable to process withdrawal. Please try again later.";
-    Alert.alert("Error", message);
-    return;
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   const displayBalance = 
     balance === null || isRefreshing 
       ? <ActivityIndicator size="small" color="#fff" />
       : `₹${balance.toFixed(2)}`;
-
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -486,7 +478,6 @@ const WithdrawMoney = () => {
           
             <Text className="text-xl font-bold">Withdrawal </Text>
             
-            {/* RESOLVED ERROR 2345: Casting the path to `unknown as never` forces TypeScript to accept the string path when strict route mapping fails. */}
             <TouchableOpacity 
                 onPress={() => router.push("/Transaction" as unknown as never)} 
             > 
@@ -527,7 +518,7 @@ const WithdrawMoney = () => {
             {/* Bank Selection */}
             <View>
               <RNPickerSelect
-                onValueChange={(value) => setSelectBankDetail(value)}
+                onValueChange={(value: string) => setSelectBankDetail(value)}
                 items={AddBank}
                 placeholder={{ label: "Select Bank Details...", value: null }}
                 style={{
@@ -555,21 +546,6 @@ const WithdrawMoney = () => {
                 keyboardType="number-pad"
                 value={amount}
               />
-               {/* <View className="flex-row items-center gap-2 mt-2">
-                 <Image
-                   className="w-8 h-10 ml-2" 
-                   source={require("../assets/images/padlock.png")}
-                   resizeMode="contain"
-                 />
-                 <TextInput
-                   className="flex-1 bg-white border border-gray-300 rounded-lg px-4 p-4 text-lg font-bold"
-                   onChangeText={setLogin}
-                   placeholder="Please Enter the Login Password"
-                   secureTextEntry
-                   keyboardType="default"
-                   value={login}
-                 />
-               </View> */}
             </View>
 
             {/* Withdraw Button */}
@@ -614,4 +590,3 @@ const WithdrawMoney = () => {
   );
 };
 
-export default WithdrawMoney;

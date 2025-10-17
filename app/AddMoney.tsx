@@ -36,7 +36,7 @@
 //     }
 
 //     const response = await fetch(
-//       "http://192.154.230.43:3000/api/wallet/balance",
+//       "https://ctbackend.crobstacle.com/api/wallet/balance",
 //       {
 //         method: "GET",
 //         headers: {
@@ -86,7 +86,7 @@
 //       }
 
 //       const response = await fetch(
-//         "http://192.154.230.43:3000/api/wallet/deposit",
+//         "https://ctbackend.crobstacle.com/api/wallet/deposit",
 //         {
 //           method: "POST",
 //           headers: {
@@ -378,13 +378,13 @@ import {
 } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router"; 
-import { useSocket } from "@/app/context/SocketContext"; 
+import { useSocket } from "@/Components/context/SocketContext"; 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import  StstusBar  from "@/Components/StstusBar";
 // API URL is only needed for the deposit action
-const API_BASE_URL = "http://192.154.230.43:3000";
+const API_BASE_URL = "https://ctbackend.crobstacle.com";
 
-const AddMoney = () => {
+export default function AddMoney() {
   const router = useRouter();
   
   // Use state and functions from the global context
@@ -727,4 +727,3 @@ const handleDeposit = async () => {
   );
 };
 
-export default AddMoney;

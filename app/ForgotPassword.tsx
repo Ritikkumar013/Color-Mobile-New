@@ -5,7 +5,7 @@ import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
-const ResetPassword = () => {
+export default function ResetPassword() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -19,7 +19,7 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://192.154.230.43:3000/api/auth/forget-password", {
+      const response = await fetch("https://ctbackend.crobstacle.com/api/auth/forget-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -88,4 +88,3 @@ const ResetPassword = () => {
   );
 };
 
-export default ResetPassword;

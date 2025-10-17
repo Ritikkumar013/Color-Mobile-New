@@ -33,7 +33,7 @@
 //     }
 
 //     try {
-//       const response = await fetch("http://192.154.230.43:3000/api/auth/login", {
+//       const response = await fetch("https://ctbackend.crobstacle.com/api/auth/login", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -241,7 +241,7 @@
 //     try {
 //       setIsLoading(true);
 
-//       const response = await fetch("http://192.154.230.43:3000/api/auth/login", {
+//       const response = await fetch("https://ctbackend.crobstacle.com/api/auth/login", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -400,9 +400,9 @@ import {
 } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAuth } from "@/Components/Auth";
-import { useSocket } from "@/app/context/SocketContext" // ✅ Import global socket
+import { useSocket } from "@/Components/context/SocketContext" // ✅ Import global socket
 
-const Login = () => {
+export default function Login() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -454,7 +454,7 @@ const Login = () => {
     try {
       setIsLoading(true);
 
-      const response = await fetch("http://192.154.230.43:3000/api/auth/login", {
+      const response = await fetch("https://ctbackend.crobstacle.com/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -530,6 +530,7 @@ const Login = () => {
             onChangeText={setPhoneNumber}
             placeholder="Enter phone number"
             keyboardType="phone-pad"
+            maxLength={10}
             editable={!isLoading}
           />
         </View>
@@ -605,4 +606,3 @@ const Login = () => {
   );
 };
 
-export default Login;

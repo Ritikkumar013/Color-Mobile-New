@@ -64,7 +64,7 @@
 //   const [timeLeft, setTimeLeft] = useState(180);
 //   const [currentPeriod, setCurrentPeriod] = useState<string>("");
 
-//   const API_BASE_URL = "http://192.154.230.43:3000";
+//   const API_BASE_URL = "https://ctbackend.crobstacle.com";
 
 //   // Timer calculation for 3-minute intervals
 //   const calculateTimeLeft = (): number => {
@@ -676,7 +676,7 @@
 //   return undefined;
 // }
 
-// const SOCKET_IO_URL = "http://192.154.230.43:3000";
+// const SOCKET_IO_URL = "https://ctbackend.crobstacle.com";
 
 // const Min3 = () => {
 //   const [gameData, setGameData] = useState<GameData | null>(null);
@@ -1661,7 +1661,7 @@
 //   gameDuration: number;
 // }
 
-// const API_BASE_URL = "http://192.154.230.43:3000";
+// const API_BASE_URL = "https://ctbackend.crobstacle.com";
 
 // const Min3 = () => {
 //   const { socket, isConnected, currentRounds, refreshRounds } = useSocket();
@@ -2098,7 +2098,7 @@ import {
     ActivityIndicator,
 } from "react-native";
 import Game1 from "@/Components/GameHistory/Game1";
-import { useSocket } from "@/app/context/SocketContext";
+import { useSocket } from "@/Components/context/SocketContext";
 
 const numberImages: { [key: number]: any } = {
     0: require("../assets/images/No_images/0.png"),
@@ -2124,7 +2124,7 @@ interface GameRound {
     gameDuration: number;
 }
 
-const API_BASE_URL = "http://192.154.230.43:3000";
+const API_BASE_URL = "https://ctbackend.crobstacle.com";
 
 const Min3 = () => {
     const { socket, isConnected, currentRounds, refreshRounds } = useSocket();

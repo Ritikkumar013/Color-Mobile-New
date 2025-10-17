@@ -43,7 +43,7 @@
 //     }
 
 //     const response = await fetch(
-//       "http://192.154.230.43:3000/api/wallet/balance",
+//       "https://ctbackend.crobstacle.com/api/wallet/balance",
 //       {
 //         method: "GET",
 //         headers: {
@@ -295,7 +295,7 @@
 //       }
 
 //       const response = await fetch(
-//         "http://192.154.230.43:3000/api/wallet/balance",
+//         "https://ctbackend.crobstacle.com/api/wallet/balance",
 //         {
 //           method: "GET",
 //           headers: {
@@ -499,6 +499,7 @@
 // };
 
 // export default WalletPage;
+
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -515,7 +516,7 @@ import Svg, { Circle } from "react-native-svg";
 import { StatusBar } from "expo-status-bar";
 import { StatusBar as RNStatusBar } from "react-native";
 // Import the socket hook
-import { useSocket } from "@/app/context/SocketContext"; // Adjust path as needed
+import { useSocket } from "@/Components/context/SocketContext"; // Adjust path as needed
 
 const WalletPage = () => {
   // Use the state and functions from the socket context
@@ -598,16 +599,16 @@ const WalletPage = () => {
               <ActivityIndicator size="large" color="#fff" />
             ) : (
               <>
-                <Text className="text-white text-xl">
+                <Text className="text-white text-xl font-bold">
                   {`₹${currentBalance.toFixed(2)}`}
                 </Text>
                 <Text className="text-white text-xl font-bold">
                   Total Amount
                 </Text>
                 {/* Optional: Show connection status */}
-                <Text className="text-white text-xs mt-1">
+                {/* <Text className="text-white text-xs mt-1">
                   {isConnected ? "Real-time updates active" : "Connecting..."}
-                </Text>
+                </Text> */}
               </>
             )}
           </View>

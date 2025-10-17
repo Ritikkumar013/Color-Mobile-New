@@ -6,7 +6,7 @@
 // const _layout = () => {
 //   return (
 //     <AuthProvider>
-      
+
 //     <Stack>
 //       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 //       <Stack.Screen
@@ -21,12 +21,12 @@
 //       <Stack.Screen
 //         name="Login"
 //         options={{
-          
+
 //           headerShown: false,
 //           headerTintColor: "white",
 //           headerShadowVisible: false,
 //           headerStyle: { backgroundColor: "#4CAF50" },
-         
+
 //         }}
 //       />
 //       <Stack.Screen
@@ -56,40 +56,46 @@
 
 // export default _layout;
 
-
-import 'react-native-reanimated';
-import 'react-native-gesture-handler';
-import * as React from "react";
+import "react-native-reanimated";
+import "react-native-gesture-handler";
+import React from "react";
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { AuthProvider } from "@/Components/Auth";
-import "../global.css" 
-import { SocketProvider } from '@/app/context/SocketContext'
+import "../global.css";
+import { SocketProvider } from "@/Components/context/SocketContext";
+
+// Separate component to use auth/socket hooks
+ function RootLayoutContent() {
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="Login" />
+      <Stack.Screen name="Register" />
+      <Stack.Screen name="Otp" />
+      <Stack.Screen name="ForgotPassword" />
+      <Stack.Screen name="UpdatePass" />
+      <Stack.Screen name="Profile" />
+      <Stack.Screen name="AboutUs" />
+      <Stack.Screen name="Privacy" />
+      <Stack.Screen name="Transaction" />
+      <Stack.Screen name="ChangePassword" />
+      <Stack.Screen name="Support" />
+      <Stack.Screen name="AddMoney" />
+      <Stack.Screen name="WithdrawMoney" />
+      <Stack.Screen name="Game1" />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SocketProvider>
       <AuthProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="Login" />
-          <Stack.Screen name="Register" />
-          <Stack.Screen name="Otp" />
-          <Stack.Screen name="ForgotPassword" />
-          <Stack.Screen name="UpdatePass" />
-          <Stack.Screen name="Profile" />
-          <Stack.Screen name="AboutUs" />
-          <Stack.Screen name="Privacy" />
-          <Stack.Screen name="Transaction" />
-          <Stack.Screen name="ChangePassword" />
-          <Stack.Screen name="Support" />
-          <Stack.Screen name="AddMoney" />
-          <Stack.Screen name="WithdrawMoney" />
-          <Stack.Screen name="Game1" />
-        </Stack>
+        <SocketProvider>
+          <RootLayoutContent />
+        </SocketProvider>
       </AuthProvider>
-      </SocketProvider>
     </GestureHandlerRootView>
   );
 }

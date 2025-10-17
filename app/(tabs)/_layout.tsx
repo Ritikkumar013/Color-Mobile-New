@@ -330,6 +330,7 @@ export default function RootLayout() {
   }
 
   return (
+  
     <Tabs
       initialRouteName="index" // This sets index as the landing page
       screenOptions={{
@@ -446,5 +447,6 @@ export default function RootLayout() {
         }}
       />
     </Tabs>
+   
   );
 }

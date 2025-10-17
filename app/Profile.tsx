@@ -137,9 +137,9 @@ import { View, Text, Image, TouchableOpacity, ActivityIndicator, Alert } from "r
 import { useRouter } from "expo-router";
 import Upload from "@/Components/Upload";
 
-const API_BASE_URL = "http://192.154.230.43:3000"; // your VPS API
+const API_BASE_URL = "https://ctbackend.crobstacle.com"; // your VPS API
 
-const ProfileScreen = () => {
+export const ProfileScreen = () => {
   const router = useRouter();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);

@@ -32,7 +32,7 @@
 //     }
 
 //     try {
-//       const response = await fetch("http://192.154.230.43:3000/api/auth/verifyOtp", {
+//       const response = await fetch("https://ctbackend.crobstacle.com/api/auth/verifyOtp", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -137,7 +137,7 @@ import { useRouter } from "expo-router";
 import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const OtpScreen = () => {
+export default function OtpScreen() {
   const [otp, setOtp] = useState<string[]>(["", "", "", ""]);
   const [phoneNumber, setPhoneNumber] = useState<string>(""); // Assume number is passed from login
   const router = useRouter();
@@ -165,7 +165,7 @@ const OtpScreen = () => {
     }
 
     try {
-      const response = await fetch("http://192.154.230.43:3000/api/auth/verifyOtp", {
+      const response = await fetch("https://ctbackend.crobstacle.com/api/auth/verifyOtp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -260,4 +260,4 @@ const OtpScreen = () => {
   );
 };
 
-export default OtpScreen;
+

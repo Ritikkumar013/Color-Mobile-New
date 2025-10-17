@@ -253,7 +253,7 @@
 //   const [isPlacingBet, setIsPlacingBet] = useState(false);
 
 //   // API Configuration
-//   const API_BASE_URL = "http://192.154.230.43:3000";
+//   const API_BASE_URL = "https://ctbackend.crobstacle.com";
 //   const API_TOKEN = "token"; // Your actual token
 
 //   // Changed to use 3-minute game (2_game instead of 1_game)
@@ -727,7 +727,7 @@ import {
     ActivityIndicator,
 } from "react-native";
 import Game1 from "@/Components/GameHistory/Game1";
-import { useSocket } from "@/app/context/SocketContext";
+import { useSocket } from "@/Components/context/SocketContext";
 
 const numberImages: { [key: number]: any } = {
     0: require("../assets/images/No_images/0.png"),
@@ -753,7 +753,7 @@ interface GameRound {
     gameDuration: number;
 }
 
-const API_BASE_URL = "http://192.154.230.43:3000";
+const API_BASE_URL = "https://ctbackend.crobstacle.com";
 
 const Min3 = () => {
     const { socket, isConnected, currentRounds, refreshRounds } = useSocket();
