@@ -89,11 +89,10 @@ const ScrollingText = () => {
           </Text>
         </Animated.View>
       </View>
-      <View className="bg-green-500 p-1 px-2 rounded-full">
+      <View className="bg-green-500 p-1 px-2 rounded-full flex items-center justify-center">
         <Text className="text-white font-bold text-xs">🔥Details</Text>
       </View>
-    </View>
-  );
+    </View>  );
 };
 
 export default ScrollingText;

@@ -488,7 +488,7 @@ export default function Login() {
   return (
     <GestureHandlerRootView>
       <ScrollView>
-        <SafeAreaView className="bg-[#4CAF50] pt-10">
+        <SafeAreaView className="bg-green-500 pt-10">
           <View className="items-center">
             <Image
               className="w-32 h-12"

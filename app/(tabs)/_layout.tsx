@@ -4,158 +4,13 @@
 // import Header from "@/Components/commonComponents/Header";
 // import { View } from "react-native";
 // import { Image, Linking } from "react-native";
-// import index from "@/app/(tabs)";
-
-// export default function RootLayout() {
-//   const handleDownload = () => {
-//     const apkUrl = "https://diuvin.com/app.apk"; // replace with your APK URL
-//     Linking.openURL(apkUrl).catch((err) =>
-//       console.error("Failed to open URL", err)
-//     );
-//   };
-
-//   return (
-//     <Tabs
-//       initialRouteName="index" // This sets index as the landing page
-//       screenOptions={{
-//         tabBarStyle: {
-//           height: 70,
-//           paddingTop: 12,
-//           paddingBottom: 12,
-//           alignItems: "center",
-//           justifyContent: "center",
-          
-//         },
-//         headerShown: false,
-//         tabBarLabelStyle: {
-//           fontSize: 11,
-//           marginTop: 4,
-//         },
-//       }}
-//     >
-//       <Tabs.Screen
-//         name="Download"
-//         options={{
-//           title: "Download",
-//           tabBarIcon: () => (
-//             <Image
-//               className="w-11 h-11"
-//               source={require("../../assets/images/download.png")}
-//               resizeMode="contain"
-//             />
-//           ),
-//         }}
-//         listeners={{
-//           tabPress: (e) => {
-//             e.preventDefault();
-//             handleDownload(); // Triggers the download
-//           },
-//         }}
-//       />
-//       <Tabs.Screen
-//         name="Wallet"
-//         options={{
-//           title: "Wallet",
-//           tabBarIcon: () => (
-//             <Image
-//               className="w-9 h-9"
-//               source={require("../../assets/images/wallet1.png")}
-//               resizeMode="contain"
-//             />
-//           ),
-//         }}
-//       />
-//       <Tabs.Screen
-//         name="index"
-//         initialParams={index}
-//         options={{
-//           headerShown: true,
-//           header: () => <Header />,
-//           title: "", 
-//           tabBarIcon: () => (
-//             <View className="bg-green-600 p-[5px] px-6 rounded-full">
-//               <Image
-//                 className="w-8 h-8"
-//                 source={require("../../assets/images/gameHome.png")}
-//                 resizeMode="contain"
-//               />
-//             </View>
-//           ),
-//         }}
-//       />
-
-//       <Tabs.Screen
-//         name="Game"
-//         options={{
-//           title: "Game",
-//           tabBarIcon: () => (
-//             <Image
-//               className="w-9 h-9"
-//               source={require("../../assets/images/win.png")}
-//               resizeMode="contain"
-//             />
-//           ),
-//         }}
-//       />
-
-//       <Tabs.Screen
-//         name="Account"
-//         options={{
-//           title: "Account",
-//           tabBarIcon: () => (
-//             <Image
-//               className="w-9 h-9"
-//               source={require("../../assets/images/profile (1).png")}
-//               resizeMode="contain"
-//             />
-//           ),
-//         }}
-//       />
-//     </Tabs>
-//   );
-// }
-
-
-
-// import "../../global.css";
-// import { Tabs } from "expo-router";
-// import React, { useState, useEffect } from "react";
-// import Header from "@/Components/commonComponents/Header";
-// import { View } from "react-native";
-// import { Image, Linking } from "react-native";
 // import { useRouter } from "expo-router";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { useFocusEffect } from '@react-navigation/native';
+// import { useAuth } from "@/Components/Auth"
 // import index from "@/app/(tabs)";
 
 // export default function RootLayout() {
-//   const [isLoggedIn, setIsLoggedIn] = useState(false);
-//   const [loading, setLoading] = useState(true);
+//   const { isLoggedIn, loading } = useAuth();
 //   const router = useRouter();
-
-//   const checkAuthStatus = async () => {
-//     try {
-//       const token = await AsyncStorage.getItem("token");
-//       setIsLoggedIn(!!token);
-//     } catch (error) {
-//       console.error("Error checking auth status:", error);
-//       setIsLoggedIn(false);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // Check auth status when component mounts
-//   useEffect(() => {
-//     checkAuthStatus();
-//   }, []);
-
-//   // Also check when the screen comes into focus
-//   useFocusEffect(
-//     React.useCallback(() => {
-//       checkAuthStatus();
-//     }, [])
-//   );
 
 //   const handleDownload = () => {
 //     const apkUrl = "https://diuvin.com/app.apk"; // replace with your APK URL
@@ -177,6 +32,7 @@
 //   }
 
 //   return (
+
 //     <Tabs
 //       initialRouteName="index" // This sets index as the landing page
 //       screenOptions={{
@@ -213,7 +69,7 @@
 //           },
 //         }}
 //       />
-      
+
 //       <Tabs.Screen
 //         name="Wallet"
 //         options={{
@@ -223,7 +79,7 @@
 //               className="w-9 h-9"
 //               source={require("../../assets/images/wallet1.png")}
 //               resizeMode="contain"
-//               style={{ 
+//               style={{
 //                 opacity: !isLoggedIn ? 0.5 : 1 // Make icon appear disabled when not logged in
 //               }}
 //             />
@@ -240,7 +96,7 @@
 //         options={{
 //           headerShown: true,
 //           header: () => <Header />,
-//           title: "", 
+//           title: "",
 //           tabBarIcon: () => (
 //             <View className="bg-green-600 p-[5px] px-6 rounded-full">
 //               <Image
@@ -262,7 +118,7 @@
 //               className="w-9 h-9"
 //               source={require("../../assets/images/win.png")}
 //               resizeMode="contain"
-//               style={{ 
+//               style={{
 //                 opacity: !isLoggedIn ? 0.5 : 1 // Make icon appear disabled when not logged in
 //               }}
 //             />
@@ -282,7 +138,7 @@
 //               className="w-9 h-9"
 //               source={require("../../assets/images/profile (1).png")}
 //               resizeMode="contain"
-//               style={{ 
+//               style={{
 //                 opacity: !isLoggedIn ? 0.5 : 1 // Make icon appear disabled when not logged in
 //               }}
 //             />
@@ -293,6 +149,7 @@
 //         }}
 //       />
 //     </Tabs>
+
 //   );
 // }
 
@@ -300,8 +157,8 @@ import "../../global.css";
 import { Tabs } from "expo-router";
 import React from "react";
 import Header from "@/Components/commonComponents/Header";
-import { View } from "react-native";
-import { Image, Linking } from "react-native";
+import { View, Linking, Pressable, TouchableOpacity, Text } from "react-native";
+import { Image } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/Components/Auth"
 import index from "@/app/(tabs)";
@@ -330,8 +187,20 @@ export default function RootLayout() {
   }
 
   return (
-  
     <Tabs
+      screenListeners={{
+        state: (e) => {
+          // Prevent Download from being in navigation state
+          const state = e.data.state;
+          if (state) {
+            const currentRoute = state.routes[state.index];
+            if (currentRoute.name === 'Download') {
+              // Immediately navigate away from Download
+              router.replace('/');
+            }
+          }
+        },
+      }}
       initialRouteName="index" // This sets index as the landing page
       screenOptions={{
         tabBarStyle: {
@@ -352,22 +221,25 @@ export default function RootLayout() {
         name="Download"
         options={{
           title: "Download",
-          tabBarIcon: () => (
-            <Image
-              className="w-11 h-11"
-              source={require("../../assets/images/download.png")}
-              resizeMode="contain"
-            />
+          tabBarButton: (props) => (
+            <TouchableOpacity
+              onPress={() => handleDownload()}
+              style={props.style}
+              activeOpacity={0.7}
+            >
+              <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <Image
+                  className="w-11 h-11"
+                  source={require("../../assets/images/download.png")}
+                  resizeMode="contain"
+                />
+                <Text style={{ fontSize: 11 }}>Download</Text>
+              </View>
+            </TouchableOpacity>
           ),
         }}
-        listeners={{
-          tabPress: (e) => {
-            e.preventDefault();
-            handleDownload(); // Triggers the download
-          },
-        }}
       />
-      
+
       <Tabs.Screen
         name="Wallet"
         options={{
@@ -377,7 +249,7 @@ export default function RootLayout() {
               className="w-9 h-9"
               source={require("../../assets/images/wallet1.png")}
               resizeMode="contain"
-              style={{ 
+              style={{
                 opacity: !isLoggedIn ? 0.5 : 1 // Make icon appear disabled when not logged in
               }}
             />
@@ -394,7 +266,7 @@ export default function RootLayout() {
         options={{
           headerShown: true,
           header: () => <Header />,
-          title: "", 
+          title: "",
           tabBarIcon: () => (
             <View className="bg-green-600 p-[5px] px-6 rounded-full">
               <Image
@@ -416,7 +288,7 @@ export default function RootLayout() {
               className="w-9 h-9"
               source={require("../../assets/images/win.png")}
               resizeMode="contain"
-              style={{ 
+              style={{
                 opacity: !isLoggedIn ? 0.5 : 1 // Make icon appear disabled when not logged in
               }}
             />
@@ -436,7 +308,7 @@ export default function RootLayout() {
               className="w-9 h-9"
               source={require("../../assets/images/profile (1).png")}
               resizeMode="contain"
-              style={{ 
+              style={{
                 opacity: !isLoggedIn ? 0.5 : 1 // Make icon appear disabled when not logged in
               }}
             />
@@ -447,6 +319,5 @@ export default function RootLayout() {
         }}
       />
     </Tabs>
-   
   );
 }

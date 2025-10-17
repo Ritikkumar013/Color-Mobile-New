@@ -197,7 +197,7 @@ export default function Register() {
     <GestureHandlerRootView>
       <ScrollView>
         <View>
-          <View className="bg-[#4CAF50] pt-10">
+          <View className="bg-green-500 pt-10">
             <View className="items-center">
               <Image className="w-32 h-12" source={require("../assets/images/headerlogo.png")} resizeMode="contain" />
             </View>
