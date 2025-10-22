@@ -486,7 +486,7 @@ export default function Login() {
   };
 
   return (
-    <GestureHandlerRootView>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ScrollView>
         <SafeAreaView className="bg-green-500 pt-10">
           <View className="items-center">

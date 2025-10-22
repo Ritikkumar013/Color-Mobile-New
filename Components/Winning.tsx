@@ -66,40 +66,28 @@ export default function WinningInfo() {
   }, []);
 
   return (
-    <FlatList
-      data={winners}
-      keyExtractor={(item) => item.id.toString()}
-      contentContainerStyle={{ paddingBottom: 20 }}
-      renderItem={({ item }) => (
-        <View className="w-full flex-row justify-between items-center bg-white p-3 rounded-lg shadow mb-3">
-          <View className="flex-row">
+    <View>
+      {winners.map((item) => (
+        <View 
+          key={item.id.toString()}
+          className="w-full flex-row justify-between items-center bg-white p-3 rounded-lg shadow mb-3"
+        >
+          <View className="flex-row items-center">
             <Image
               source={item.avatar}
               className="w-10 h-10 rounded-full border mr-3"
               resizeMode="contain"
             />
-            <View className="">
-             <Text className="font-semibold">{item.username}</Text>
-             <Text className="text-sm text-gray-500">Winning amount</Text>
-             </View>
+            <View>
+              <Text className="font-semibold">{item.username}</Text>
+              <Text className="text-sm text-gray-500">Winning amount</Text>
+            </View>
           </View>
-          {/* <View className="flex-1/4">
-            <Text className="font-semibold">{item.username}</Text>
-            <Text className="text-sm text-gray-500">Winning amount</Text>
-          </View> */}
-          {/* <Image
-            source={item.gameIcon}
-
-
-
-            className="w-10 h-10 mr-3"
-          /> */}
           <Text className="text-green-600 font-bold">
             ₹{item.amount.toLocaleString()}
           </Text>
         </View>
-      )}
-      // nestedScrollEnabled={true}
-    />
+      ))}
+    </View>
   );
 }

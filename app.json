@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "sdkVersion": "54.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo-1.webp",
+    "icon": "./assets/images/s-logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -35,7 +35,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logoD.png",
+          "image": "./assets/images/s-logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#22c55e"
