@@ -65,6 +65,7 @@ export default function ResetPassword() {
               <Text className="font-bold text-lg">Phone number</Text>
             </View>
             <TextInput
+             placeholderTextColor="#666666"
               className="bg-white rounded-md p-3"
               value={phoneNumber}
               onChangeText={setPhoneNumber}

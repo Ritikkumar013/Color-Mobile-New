@@ -526,6 +526,7 @@ export default function Login() {
           </View>
           <TextInput
             className="bg-white rounded-md p-3"
+             placeholderTextColor="#666666"
             value={phoneNumber}
             onChangeText={setPhoneNumber}
             placeholder="Enter phone number"
@@ -546,6 +547,8 @@ export default function Login() {
           </View>
           <View className="relative">
             <TextInput
+             style={{ color: '#000000' }} 
+              placeholderTextColor="#666666" 
               className="bg-white rounded-md p-3"
               value={password}
               onChangeText={setPassword}

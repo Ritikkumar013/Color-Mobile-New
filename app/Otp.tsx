@@ -229,6 +229,7 @@ export default function OtpScreen() {
               <TextInput
                 key={index}
                 ref={inputsRef[index]}
+                 placeholderTextColor="#666666"
                 className="w-12 h-12 bg-white text-center text-lg font-bold rounded-md"
                 value={digit}
                 onChangeText={(value) => handleOtpChange(value, index)}

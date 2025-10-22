@@ -6,7 +6,7 @@
 // import StstusBar  from "@/Components/StstusBar";
 
 // const ChangePassword = () => {
-//   const [password, setPassword] = useState<string>("");  
+//   const [password, setPassword] = useState<string>("");
 //   const [newPassword, setNewPassword] = useState<string>("");
 //   const [conPassword, setConPassword] = useState<string>("");
 
@@ -81,7 +81,6 @@
 //             /> */}
 //       </View>
 
-
 //       <View className="mx-4 mt-4 flex-row items-center gap-2">
 //         <Image
 //           className="w-8 h-14"
@@ -96,7 +95,7 @@
 //           value={conPassword}
 //           onChangeText={setConPassword} // Updates the phone number state on text change
 //           placeholder="Enter password"
-//           secureTextEntry={!showPassword} 
+//           secureTextEntry={!showPassword}
 //           keyboardType="default" // To show the numeric keyboard
 //         />
 //         <TouchableOpacity onPress={()=>setShowPassword(!showPassword)} className=" absolute right-7">
@@ -145,13 +144,16 @@ export default function ChangePassword() {
         const token = await AsyncStorage.getItem("token");
         if (!token) return;
 
-        const response = await fetch("https://ctbackend.crobstacle.com/api/users/profile", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          "https://ctbackend.crobstacle.com/api/users/profile",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (response.ok) {
           const result = await response.json();
@@ -287,6 +289,7 @@ export default function ChangePassword() {
       <View>
         <TextInput
           className="bg-white rounded-md mx-4 mt-1 px-3 py-2"
+           placeholderTextColor="#666666"
           value={otp}
           onChangeText={setOtp}
           placeholder="Enter 6-digit OTP"
@@ -306,6 +309,8 @@ export default function ChangePassword() {
       </View>
       <View>
         <TextInput
+          style={{ color: "#000000" }}
+          placeholderTextColor="#666666"
           className="bg-white rounded-md mx-4 mt-1 px-3 py-2"
           value={newPassword}
           onChangeText={setNewPassword}
@@ -340,6 +345,8 @@ export default function ChangePassword() {
       </View>
       <View>
         <TextInput
+          style={{ color: "#000000" }}
+          placeholderTextColor="#666666"
           className="bg-white rounded-md mx-4 mt-1 px-3 py-2"
           value={confirmPassword}
           onChangeText={setConfirmPassword}
@@ -379,5 +386,4 @@ export default function ChangePassword() {
       </TouchableOpacity>
     </View>
   );
-};
-
+}

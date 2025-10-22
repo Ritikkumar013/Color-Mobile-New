@@ -719,7 +719,7 @@ import React, { useState, useEffect, useRef } from "react";
 import BetModal from "./Betmodel";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, Text, Image, TouchableOpacity, Alert } from "react-native";
-import Game1 from "@/Components/GameHistory/Game1";
+import Game3 from "@/Components/GameHistory/Game3";
 import { useSocket } from "@/Components/context/SocketContext";
 
 const numberImages: { [key: number]: any } = {
@@ -1275,7 +1275,7 @@ const Min3 = () => {
       />
 
       <View className="pt-5">
-        <Game1 />
+        <Game3 />
       </View>
     </View>
   );
