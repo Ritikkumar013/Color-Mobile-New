@@ -1,9 +1,10 @@
+
 // import "../../global.css";
 // import { Tabs } from "expo-router";
 // import React from "react";
 // import Header from "@/Components/commonComponents/Header";
-// import { View } from "react-native";
-// import { Image, Linking } from "react-native";
+// import { View, Linking, Pressable, TouchableOpacity, Text } from "react-native";
+// import { Image } from "react-native";
 // import { useRouter } from "expo-router";
 // import { useAuth } from "@/Components/Auth"
 // import index from "@/app/(tabs)";
@@ -32,8 +33,20 @@
 //   }
 
 //   return (
-
 //     <Tabs
+//       screenListeners={{
+//         state: (e) => {
+//           // Prevent Download from being in navigation state
+//           const state = e.data.state;
+//           if (state) {
+//             const currentRoute = state.routes[state.index];
+//             if (currentRoute.name === 'Download') {
+//               // Immediately navigate away from Download
+//               router.replace('/');
+//             }
+//           }
+//         },
+//       }}
 //       initialRouteName="index" // This sets index as the landing page
 //       screenOptions={{
 //         tabBarStyle: {
@@ -54,19 +67,22 @@
 //         name="Download"
 //         options={{
 //           title: "Download",
-//           tabBarIcon: () => (
-//             <Image
-//               className="w-11 h-11"
-//               source={require("../../assets/images/download.png")}
-//               resizeMode="contain"
-//             />
+//           tabBarButton: (props) => (
+//             <TouchableOpacity
+//               onPress={() => handleDownload()}
+//               style={props.style}
+//               activeOpacity={0.7}
+//             >
+//               <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+//                 <Image
+//                   className="w-11 h-11"
+//                   source={require("../../assets/images/download.png")}
+//                   resizeMode="contain"
+//                 />
+//                 <Text style={{ fontSize: 11 }}>Download</Text>
+//               </View>
+//             </TouchableOpacity>
 //           ),
-//         }}
-//         listeners={{
-//           tabPress: (e) => {
-//             e.preventDefault();
-//             handleDownload(); // Triggers the download
-//           },
 //         }}
 //       />
 
@@ -149,26 +165,26 @@
 //         }}
 //       />
 //     </Tabs>
-
 //   );
 // }
-
 import "../../global.css";
 import { Tabs } from "expo-router";
 import React from "react";
 import Header from "@/Components/commonComponents/Header";
-import { View, Linking, Pressable, TouchableOpacity, Text } from "react-native";
+import { View, Linking, Pressable, TouchableOpacity, Text, Platform } from "react-native";
 import { Image } from "react-native";
 import { useRouter } from "expo-router";
-import { useAuth } from "@/Components/Auth"
+import { useAuth } from "@/Components/Auth";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import index from "@/app/(tabs)";
 
 export default function RootLayout() {
   const { isLoggedIn, loading } = useAuth();
   const router = useRouter();
+  const insets = useSafeAreaInsets(); // Get safe area insets
 
   const handleDownload = () => {
-    const apkUrl = "https://diuvin.com/app.apk"; // replace with your APK URL
+    const apkUrl = "https://diuvin.com/app.apk";
     Linking.openURL(apkUrl).catch((err) =>
       console.error("Failed to open URL", err)
     );
@@ -181,34 +197,34 @@ export default function RootLayout() {
     }
   };
 
-  // Don't render tabs while checking authentication
   if (loading) {
-    return null; // or a loading spinner
+    return null;
   }
 
   return (
     <Tabs
       screenListeners={{
         state: (e) => {
-          // Prevent Download from being in navigation state
           const state = e.data.state;
           if (state) {
             const currentRoute = state.routes[state.index];
             if (currentRoute.name === 'Download') {
-              // Immediately navigate away from Download
               router.replace('/');
             }
           }
         },
       }}
-      initialRouteName="index" // This sets index as the landing page
+      initialRouteName="index"
       screenOptions={{
         tabBarStyle: {
-          height: 70,
+          height: 70 + insets.bottom, // Add bottom inset to height
           paddingTop: 12,
-          paddingBottom: 12,
+          paddingBottom: insets.bottom + 12, // Add bottom inset to padding
           alignItems: "center",
           justifyContent: "center",
+          backgroundColor: '#ffffff',
+          borderTopWidth: 1,
+          borderTopColor: '#e5e5e5',
         },
         headerShown: false,
         tabBarLabelStyle: {
@@ -233,7 +249,7 @@ export default function RootLayout() {
                   source={require("../../assets/images/download.png")}
                   resizeMode="contain"
                 />
-                <Text style={{ fontSize: 11 }}>Download</Text>
+                <Text style={{ fontSize: 11}}>Download</Text>
               </View>
             </TouchableOpacity>
           ),
@@ -250,7 +266,7 @@ export default function RootLayout() {
               source={require("../../assets/images/wallet1.png")}
               resizeMode="contain"
               style={{
-                opacity: !isLoggedIn ? 0.5 : 1 // Make icon appear disabled when not logged in
+                opacity: !isLoggedIn ? 0.5 : 1
               }}
             />
           ),
@@ -289,7 +305,7 @@ export default function RootLayout() {
               source={require("../../assets/images/win.png")}
               resizeMode="contain"
               style={{
-                opacity: !isLoggedIn ? 0.5 : 1 // Make icon appear disabled when not logged in
+                opacity: !isLoggedIn ? 0.5 : 1
               }}
             />
           ),
@@ -309,7 +325,7 @@ export default function RootLayout() {
               source={require("../../assets/images/profile (1).png")}
               resizeMode="contain"
               style={{
-                opacity: !isLoggedIn ? 0.5 : 1 // Make icon appear disabled when not logged in
+                opacity: !isLoggedIn ? 0.5 : 1
               }}
             />
           ),
